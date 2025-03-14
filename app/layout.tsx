@@ -18,6 +18,19 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Noris Development | Розробка програмного забезпечення",
   description: "Noris Development - Світ сучасних технологій",
+  openGraph: {
+    title: "Noris Development | Розробка програмного забезпечення",
+    description: "Noris Development - Світ сучасних технологій",
+    url: "https://noris-dev.site",
+    images: [
+      {
+        url: "https://noris-dev.site/images/jpeg/noris.jpg", // URL вашої Open Graph картинки
+        width: 1200,
+        height: 630,
+        alt: "Noris Development Image",
+      },
+    ],
+  },
 };
 
 export default function RootLayout({
