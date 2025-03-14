@@ -47,8 +47,8 @@ const OrderForm = ({ isOpen, toggleSheet }: { isOpen: any; toggleSheet: any }) =
   });
 const [confetti,setConfetti] = useState(false)
   const onSubmit = async (data: FormData) => {
-// const {data:result} = await axios.post(`https://api.noris-dev.site/orders/create`,data)
-const {data:result} = await axios.post(`http://localhost:8809/orders/create`,data)
+const {data:result} = await axios.post(`https://api.noris-dev.site/orders/create`,data)
+// const {data:result} = await axios.post(`http://localhost:8809/orders/create`,data)
 
 console.log(result);
 if (result?.id) {
