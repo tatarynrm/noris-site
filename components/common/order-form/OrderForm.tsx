@@ -29,7 +29,16 @@ const categoriesOptions = [
   { value: 'mobile-app', label: 'Мобільний додаток' },
   { value: 'automation', label: 'Автоматизація процесів' },
 ];
+const playSuccessSound = () => {
+  const audio = new Audio("/sounds/success.mp3"); // Зазначте шлях до вашого звукового файлу
+  audio.play();
 
+  // Зупинка аудіо через 7 секунд
+  setTimeout(() => {
+    audio.pause();
+    audio.currentTime = 0; // Відкатити відтворення назад на початок
+  }, 6000); // 7000 мілісекунд = 7 секунд
+};
 const OrderForm = ({ isOpen, toggleSheet }: { isOpen: any; toggleSheet: any }) => {
   const { register, handleSubmit, control, formState: { errors }, getValues, setValue } = useForm<FormData>({
     defaultValues: {
@@ -38,11 +47,13 @@ const OrderForm = ({ isOpen, toggleSheet }: { isOpen: any; toggleSheet: any }) =
   });
 const [confetti,setConfetti] = useState(false)
   const onSubmit = async (data: FormData) => {
-const {data:result} = await axios.post(`https://api.noris-dev.site/orders/create`,data)
+// const {data:result} = await axios.post(`https://api.noris-dev.site/orders/create`,data)
+const {data:result} = await axios.post(`http://localhost:8809/orders/create`,data)
 
 console.log(result);
 if (result?.id) {
      setConfetti(true)
+     playSuccessSound()
     setTimeout(()=>{
 toggleSheet()
 setConfetti(false)
