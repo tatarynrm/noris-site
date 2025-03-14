@@ -119,8 +119,42 @@
 @layer base {
   * {
     @apply border-border outline-ring/50;
+    h1 {
+      font-size: 40px;
+    }
   }
   body {
     @apply bg-background text-foreground;
   }
+}
+
+@utility container {
+  margin-inline:auto;
+  padding-inline:2rem;
+  @media (width >= --theme(--breakpoint-sm)) {
+    max-width:none;
+  }
+  @media (width >= 1400px) {
+    max-width:1400px;
+  }
+}
+/* Для браузерів WebKit (Chrome, Safari) */
+body {
+  -webkit-overflow-scrolling: touch; /* Для кращої прокрутки на мобільних */
+  overflow-x: hidden; /* Прибирає горизонтальний скрол */
+}
+
+/* Для Firefox */
+html {
+  scrollbar-width: none;  /* Прибирає повзунок в Firefox */
+}
+
+/* Для Webkit-браузерів (Chrome, Safari) */
+*::-webkit-scrollbar {
+  display: none; /* Прибирає повзунок */
+}
+
+
+html {
+  scroll-behavior: smooth;
 }
