@@ -10,15 +10,13 @@ interface UserProfile extends User {
   provider?: string;  // Зберігаємо провайдера (наприклад, 'google')
   name?: string;  // Може бути необов'язковим
 }
-
 // Типізація для контексту JWT
 interface CustomJWT extends JWT {
   id?: string;
   email?: string;
-  image?: string;
+  image?: string | null;  // Тепер дозволяємо null для image
   name?: string;
 }
-
 export const authConfig: AuthOptions = {
   providers: [
     // Google provider
@@ -55,7 +53,7 @@ export const authConfig: AuthOptions = {
 
   callbacks: {
     // Callback для jwt
-    async jwt({ token, user }: { token: CustomJWT; user?: UserProfile }): Promise<CustomJWT> {
+    async jwt({ token, user }: { token: CustomJWT; user?: UserProfile | undefined }): Promise<JWT> {
       if (user) {
         // Зберігаємо дані користувача в токені
         token.id = user.id;
@@ -67,9 +65,9 @@ export const authConfig: AuthOptions = {
     },
 
     // Callback для сесії
-    async session({ session, token }: { session: Session; token: CustomJWT }): Promise<Session | null> {
+    async session({ session, token }: { session: Session; token: JWT }): Promise<Session> {
       if (!token) {
-        return null;  // Повертаємо null, якщо токен закінчився
+        return session;  // Якщо токен закінчився, повертаємо існуючу сесію
       }
 
       // Оновлюємо дані сесії за допомогою токену
@@ -77,7 +75,7 @@ export const authConfig: AuthOptions = {
       session.user.email = token.email as string;
       session.user.image = token.image as string;
       session.user.name = token.name as string;
-      
+
       console.log('SESSION DATA', session);
       return session;
     },
@@ -93,8 +91,8 @@ export const authConfig: AuthOptions = {
     },
 
     // Callback для обробки входу
-    async signIn({ account, profile }: { account: Account; profile: Profile }): Promise<boolean> {
-      if (account.provider === "google") {
+    async signIn({ account, profile }: { account: Account | null; profile: Profile }): Promise<boolean> {
+      if (account?.provider === "google") {
         console.log('Google Profile:', profile);
         console.log('Google Account:', account);
       }
