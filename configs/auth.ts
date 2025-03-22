@@ -1,6 +1,7 @@
-import { AuthOptions, User, Account, Profile, Session, AdapterUser } from "next-auth";
+import { AuthOptions, User, Account, Profile, Session } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import { JWT } from "next-auth/jwt";  // Імпортуємо тип JWT для коректної типізації токену
+import { AdapterUser } from "next-auth/adapters";
 
 // Типізація для користувача
 interface UserProfile extends User {
@@ -33,7 +34,6 @@ export const authConfig: AuthOptions = {
         },
       },
     }),
-    // Додавання інших провайдерів, якщо потрібно
   ],
 
   pages: {
@@ -54,29 +54,30 @@ export const authConfig: AuthOptions = {
   },
 
   callbacks: {
-    // Callback для jwt
-    async jwt({ token, user }: { token: CustomJWT; user?: UserProfile }): Promise<JWT> {
-      if (user) {
-        // Зберігаємо дані користувача в токені
-        token.id = user.id;
-        token.email = user.email;
-        token.image = user.image;
-        token.name = user.name;
-      }
-      return token;  // Якщо користувача немає, повертаємо токен без змін
-    },
+    // // Callback для jwt
+    // async jwt({ token, user, account, profile, trigger }: { token: CustomJWT; user?: UserProfile; account?: Account | null; profile?: Profile; trigger?: string; }): Promise<JWT> {
+    //   if (user) {
+    //     // Зберігаємо дані користувача в токені
+    //     token.id = user.id;
+    //     token.email = user.email || ''; // Перевірка, щоб не було null
+    //     token.image = user.image || ''; // Перевірка, щоб не було null
+    //     token.name = user.name || ''; // Перевірка, щоб не було null
+    //   }
+    //   return token;  // Якщо користувача немає, повертаємо токен без змін
+    // },
 
     // Callback для сесії
-    async session({ session, token }: { session: Session; token: CustomJWT }): Promise<Session> {
+    async session({ session, token }: { session: Session; token: JWT }): Promise<Session> {
       if (!token) {
         return session;  // Якщо токен закінчився, повертаємо існуючу сесію
       }
 
-      // Оновлюємо дані сесії за допомогою токену
-      session.user.id = token.id as string;
-      session.user.email = token.email as string;
-      session.user.image = token.image as string;
-      session.user.name = token.name as string;
+
+      // // Оновлюємо дані сесії за допомогою токену
+      // session.user.id = token.id as string;
+      // session.user.email = token.email as string;
+      // session.user.image = token.image as string;
+      // session.user.name = token.name as string;
 
       console.log('SESSION DATA', session);
       return session;

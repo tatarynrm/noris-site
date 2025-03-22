@@ -40,12 +40,25 @@ const OrderForm = ({ isOpen, toggleSheet }: { isOpen: any; toggleSheet: any }) =
       categories: [],
     },
   });
-  const storedEmail = localStorage.getItem('email');
-  const storedName = localStorage.getItem('name');
+
+  const [storedEmail, setStoredEmail] = useState<string | null>(null);
+  const [storedName, setStoredName] = useState<string | null>(null);
+
+  useEffect(() => {
+    // Перевірка, чи виконується код на клієнтській стороні (в браузері)
+    if (typeof window !== 'undefined') {
+      const email = localStorage.getItem('email');
+      const name = localStorage.getItem('name');
+      
+      setStoredEmail(email);
+      setStoredName(name);
+    }
+  }, []); // Порожній масив, щоб ефект виконувався лише один раз після завантаження компонента
+
   const [confetti, setConfetti] = useState(false);
 
   const onSubmit = async (data: FormData) => {
-    const { data: result } = await axios.post(`https://api.noris-dev.site/orders/create`, data);
+    const { data: result } = await axios.post(`${API_URL}/orders/create`, data);
 
     console.log(result);
 
@@ -58,10 +71,9 @@ const OrderForm = ({ isOpen, toggleSheet }: { isOpen: any; toggleSheet: any }) =
       }, 5000);
     }
   };
-console.log(storedEmail,'store - email');
-console.log(storedName,'store - name');
 
-  // Retrieve email and name from localStorage and set them in the form
+  console.log(storedEmail, 'store - email');
+  console.log(storedName, 'store - name');
 
   return (
     <Sheet open={isOpen} onOpenChange={toggleSheet}>
@@ -81,7 +93,7 @@ console.log(storedName,'store - name');
           </SheetDescription>
         </SheetHeader>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="flexflex-col gap-4 md:grid grid-cols-1 lg:grid-cols-3">
+        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4 md:grid grid-cols-1 lg:grid-cols-3">
           {/* Name Field */}
           <div className="flex flex-col">
             <label htmlFor="name" className="text-sm font-semibold">
@@ -91,6 +103,7 @@ console.log(storedName,'store - name');
               id="name"
               type="text"
               {...register('name', { required: 'Ім\'я обов\'язкове' })}
+              defaultValue={storedName || ''} // Populate from localStorage if available
               className="p-2 border border-gray-300 rounded-md bg-purple-200"
             />
             {errors.name && <span className="text-red-500 text-sm">{errors.name.message}</span>}
@@ -108,6 +121,7 @@ console.log(storedName,'store - name');
                 required: 'Email обов\'язковий',
                 pattern: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
               })}
+              defaultValue={storedEmail || ''} // Populate from localStorage if available
               className="p-2 border border-gray-300 rounded-md bg-purple-200"
             />
             {errors.email && <span className="text-red-500 text-sm">{errors.email.message}</span>}
