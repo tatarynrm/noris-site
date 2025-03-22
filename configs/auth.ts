@@ -1,4 +1,4 @@
-import { AuthOptions, User, Account, Profile, Session } from "next-auth";
+import { AuthOptions, User, Account, Profile, Session, AdapterUser } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import { JWT } from "next-auth/jwt";  // Імпортуємо тип JWT для коректної типізації токену
 
@@ -10,6 +10,7 @@ interface UserProfile extends User {
   provider?: string;  // Зберігаємо провайдера (наприклад, 'google')
   name?: string;  // Може бути необов'язковим
 }
+
 // Типізація для контексту JWT
 interface CustomJWT extends JWT {
   id?: string;
@@ -17,6 +18,7 @@ interface CustomJWT extends JWT {
   image?: string | null;  // Тепер дозволяємо null для image
   name?: string;
 }
+
 export const authConfig: AuthOptions = {
   providers: [
     // Google provider
@@ -53,7 +55,7 @@ export const authConfig: AuthOptions = {
 
   callbacks: {
     // Callback для jwt
-    async jwt({ token, user }: { token: CustomJWT; user?: UserProfile | undefined }): Promise<JWT> {
+    async jwt({ token, user }: { token: CustomJWT; user?: UserProfile }): Promise<JWT> {
       if (user) {
         // Зберігаємо дані користувача в токені
         token.id = user.id;
@@ -65,7 +67,7 @@ export const authConfig: AuthOptions = {
     },
 
     // Callback для сесії
-    async session({ session, token }: { session: Session; token: JWT }): Promise<Session> {
+    async session({ session, token }: { session: Session; token: CustomJWT }): Promise<Session> {
       if (!token) {
         return session;  // Якщо токен закінчився, повертаємо існуючу сесію
       }
@@ -91,7 +93,7 @@ export const authConfig: AuthOptions = {
     },
 
     // Callback для обробки входу
-    async signIn({ account, profile }: { account: Account | null; profile: Profile }): Promise<boolean> {
+    async signIn({ account, profile }: { account: Account | null; profile?: Profile }): Promise<boolean> {
       if (account?.provider === "google") {
         console.log('Google Profile:', profile);
         console.log('Google Account:', account);
