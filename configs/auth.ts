@@ -31,6 +31,7 @@ export const authConfig: AuthOptions = {
           prompt: 'select_account', // Примусове запитання про вибір акаунта
           access_type: "offline",
           response_type: "code",
+          scope:'openid profile email'
         },
       },
     }),
@@ -86,6 +87,8 @@ export const authConfig: AuthOptions = {
     // Callback для редиректу
     async redirect({ url, baseUrl }: { url: string; baseUrl: string }): Promise<string> {
       // Якщо редирект починається з базового URL, то повертаємо його
+      console.log('BASE URL',baseUrl);
+      
       if (url.startsWith(baseUrl)) {
         return url;
       }

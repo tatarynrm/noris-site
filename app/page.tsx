@@ -9,8 +9,10 @@ import { useSession } from "next-auth/react";
 
 
 export default async function Home() {
-  const session = await getServerSession(authConfig);
+ 
 
+ console.log('ID',process.env.GOOGLE_CLIENT_ID);
+ console.log('SECRET',process.env.GOOGLE_CLIENT_SECRET);
  
   return (
     <div className="">
