@@ -1,20 +1,13 @@
-'use client'
-import React, { useEffect, useState } from "react";
-import { useForm, Controller } from "react-hook-form";
-import Select from "react-select";
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-} from "@/components/ui/sheet";
-import axios from "axios";
-import { API_URL } from "@/lib/urls";
-import { log } from "console";
-import Confetti from "../confetti/confetti";
+'use client'; // Ensure it's a client component
 
-// Типи для форми
+import React, { useEffect, useState } from 'react';
+import { useForm, Controller } from 'react-hook-form';
+import Select from 'react-select';
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from '@/components/ui/sheet';
+import axios from 'axios';
+import { API_URL } from '@/lib/urls';
+import Confetti from '../confetti/confetti';
+
 interface FormData {
   name: string;
   email: string;
@@ -29,45 +22,58 @@ const categoriesOptions = [
   { value: 'mobile-app', label: 'Мобільний додаток' },
   { value: 'automation', label: 'Автоматизація процесів' },
 ];
+
 const playSuccessSound = () => {
-  const audio = new Audio("/sounds/success.mp3"); // Зазначте шлях до вашого звукового файлу
+  const audio = new Audio('/sounds/success.mp3'); // Adjust the path to your sound file
   audio.play();
 
-  // Зупинка аудіо через 7 секунд
+  // Stop audio after 7 seconds
   setTimeout(() => {
     audio.pause();
-    audio.currentTime = 0; // Відкатити відтворення назад на початок
-  }, 6000); // 7000 мілісекунд = 7 секунд
+    audio.currentTime = 0; // Reset playback
+  }, 6000); // 6000 milliseconds = 6 seconds
 };
+
 const OrderForm = ({ isOpen, toggleSheet }: { isOpen: any; toggleSheet: any }) => {
   const { register, handleSubmit, control, formState: { errors }, getValues, setValue } = useForm<FormData>({
     defaultValues: {
       categories: [],
-    }
+    },
   });
-const [confetti,setConfetti] = useState(false)
+  const storedEmail = localStorage.getItem('email');
+  const storedName = localStorage.getItem('name');
+  const [confetti, setConfetti] = useState(false);
+
   const onSubmit = async (data: FormData) => {
-const {data:result} = await axios.post(`https://api.noris-dev.site/orders/create`,data)
-// const {data:result} = await axios.post(`http://localhost:8809/orders/create`,data)
+    const { data: result } = await axios.post(`https://api.noris-dev.site/orders/create`, data);
 
-console.log(result);
-if (result?.id) {
-     setConfetti(true)
-     playSuccessSound()
-    setTimeout(()=>{
-toggleSheet()
-setConfetti(false)
-    },5000)
-}
+    console.log(result);
 
-    
+    if (result?.id) {
+      setConfetti(true);
+      playSuccessSound();
+      setTimeout(() => {
+        toggleSheet();
+        setConfetti(false);
+      }, 5000);
+    }
   };
-useEffect(()=>{
+console.log(storedEmail,'store - email');
+console.log(storedName,'store - name');
 
-},[confetti])
+  // Retrieve email and name from localStorage and set them in the form
+
   return (
-    <Sheet open={isOpen} onOpenChange={toggleSheet} >
-      <SheetContent side="bottom" className="w-full h-[90vh] p-6" style={{backgroundImage:'url(/images/jpeg/form-bg.jpg)',backgroundSize:"cover",backgroundRepeat:'none'}}>
+    <Sheet open={isOpen} onOpenChange={toggleSheet}>
+      <SheetContent
+        side="bottom"
+        className="w-full h-[90vh] p-6"
+        style={{
+          backgroundImage: 'url(/images/jpeg/form-bg.jpg)',
+          backgroundSize: 'cover',
+          backgroundRepeat: 'none',
+        }}
+      >
         <SheetHeader>
           <SheetTitle></SheetTitle>
           <SheetDescription className="font-bold text-xl text-gray-700">
@@ -75,14 +81,16 @@ useEffect(()=>{
           </SheetDescription>
         </SheetHeader>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="flexflex-col gap-4 md:grid grid-cols-1 lg:grid-cols-3 ">
+        <form onSubmit={handleSubmit(onSubmit)} className="flexflex-col gap-4 md:grid grid-cols-1 lg:grid-cols-3">
           {/* Name Field */}
           <div className="flex flex-col">
-            <label htmlFor="name" className="text-sm font-semibold">Ім'я</label>
+            <label htmlFor="name" className="text-sm font-semibold">
+              Ім'я
+            </label>
             <input
               id="name"
               type="text"
-              {...register("name", { required: "Ім'я обов'язкове" })}
+              {...register('name', { required: 'Ім\'я обов\'язкове' })}
               className="p-2 border border-gray-300 rounded-md bg-purple-200"
             />
             {errors.name && <span className="text-red-500 text-sm">{errors.name.message}</span>}
@@ -90,11 +98,16 @@ useEffect(()=>{
 
           {/* Email Field */}
           <div className="flex flex-col">
-            <label htmlFor="email" className="text-sm font-semibold">Email</label>
+            <label htmlFor="email" className="text-sm font-semibold">
+              Email
+            </label>
             <input
               id="email"
               type="email"
-              {...register("email", { required: "Email обов'язковий", pattern: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/ })}
+              {...register('email', {
+                required: 'Email обов\'язковий',
+                pattern: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
+              })}
               className="p-2 border border-gray-300 rounded-md bg-purple-200"
             />
             {errors.email && <span className="text-red-500 text-sm">{errors.email.message}</span>}
@@ -102,11 +115,13 @@ useEffect(()=>{
 
           {/* Phone Field */}
           <div className="flex flex-col">
-            <label htmlFor="phone" className="text-sm font-semibold">Телефон</label>
+            <label htmlFor="phone" className="text-sm font-semibold">
+              Телефон
+            </label>
             <input
               id="phone"
               type="tel"
-              {...register("phone", { required: "Телефон обов'язковий" })}
+              {...register('phone', { required: 'Телефон обов\'язковий' })}
               className="p-2 border border-gray-300 rounded-md bg-purple-200"
             />
             {errors.phone && <span className="text-red-500 text-sm">{errors.phone.message}</span>}
@@ -114,24 +129,28 @@ useEffect(()=>{
 
           {/* Categories Field (Multi-Select) */}
           <div className="flex flex-col col-span-2">
-            <label htmlFor="categories" className="text-sm font-semibold">Виберіть категорії</label>
+            <label htmlFor="categories" className="text-sm font-semibold">
+              Виберіть категорії
+            </label>
             <Controller
               name="categories"
               control={control}
-              rules={{ required: "Вибір категорії обов'язковий" }}
+              rules={{ required: 'Вибір категорії обов\'язковий' }}
               render={({ field }) => (
                 <Select
                   {...field}
                   isMulti
                   options={categoriesOptions}
-                  className="react-select-container w-full  "
+                  className="react-select-container w-full"
                   classNamePrefix="react-select"
                   placeholder="Виберіть категорії..."
                   value={categoriesOptions.filter(option => field.value.includes(option.value))}
                   onChange={(selectedOptions) => {
-                    const values = selectedOptions ? selectedOptions.map((option: any) => option.value) : [];
-                    field.onChange(values);  // Оновлюємо значення категорій у формі
-                    setValue('categories', values);  // Оновлюємо значення categories в формі
+                    const values = selectedOptions
+                      ? selectedOptions.map((option: any) => option.value)
+                      : [];
+                    field.onChange(values); // Update form categories value
+                    setValue('categories', values); // Update categories in form
                   }}
                 />
               )}
@@ -142,14 +161,11 @@ useEffect(()=>{
           {/* Selected categories (display tags) */}
           <div className="col-span-2">
             <div className="flex flex-wrap gap-2">
-              {getValues("categories")?.map((category: string, index: number) => {
-                const categoryLabel = categoriesOptions.find((opt) => opt.value === category)?.label;
+              {getValues('categories')?.map((category: string, index: number) => {
+                const categoryLabel = categoriesOptions.find(opt => opt.value === category)?.label;
                 return (
                   categoryLabel && (
-                    <div
-                      key={index}
-                      className="px-3 py-1 bg-blue-200 text-blue-800 rounded-lg text-sm"
-                    >
+                    <div key={index} className="px-3 py-1 bg-blue-200 text-blue-800 rounded-lg text-sm">
                       {categoryLabel}
                     </div>
                   )
@@ -166,21 +182,21 @@ useEffect(()=>{
             >
               Відправити
             </button>
-            {confetti &&  <> 
-            
-            <br />
-            <br />
-            <br />
-            <div className="text-center">
-  <span className="block font-bold text-3xl mb-4">Заявку успішно відправлено 😀</span>
-  <span className="block text-lg">Ми з вами зв'яжемось найближчим часом.</span>
-</div>
-            </> }
-            {confetti && <Confetti/> }
+            {confetti && (
+              <>
+                <br />
+                <br />
+                <br />
+                <div className="text-center">
+                  <span className="block font-bold text-3xl mb-4">Заявку успішно відправлено 😀</span>
+                  <span className="block text-lg">Ми з вами зв'яжемось найближчим часом.</span>
+                </div>
+              </>
+            )}
+            {confetti && <Confetti />}
           </div>
         </form>
       </SheetContent>
-     
     </Sheet>
   );
 };

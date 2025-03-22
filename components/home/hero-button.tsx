@@ -4,8 +4,10 @@ import { Button } from '../ui/button'
 import { ArrowRight } from 'lucide-react'
 
 import { Link } from 'react-scroll';
+import { useSession } from 'next-auth/react';
 
 const HeroButton = () => {
+
   return (
     <Link
     to="get-order" // Назва елемента, до якого потрібно прокручувати

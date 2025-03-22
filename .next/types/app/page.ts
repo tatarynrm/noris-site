@@ -1,4 +1,4 @@
-// File: D:\Users\rt\Desktop\learn-next\noris-site\app\page.tsx
+// File: D:\NORIS_PROJECTS\Noris_Work_Presentation\noris-site\app\page.tsx
 import * as entry from '../../../app/page.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 
