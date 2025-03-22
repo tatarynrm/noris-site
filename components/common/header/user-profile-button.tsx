@@ -4,11 +4,11 @@ import { useState } from 'react';
 import { signOut } from 'next-auth/react'; // Import signOut for logout functionality
 
 // Dropdown component for the menu
-import { Menu, MenuButton, MenuItems, MenuItem } from '@headlessui/react';
+
 import { Avatar } from '@radix-ui/react-avatar';
 import ColorSpan from '../TextStyle/color-span/color-span';
 import { RxExit } from "react-icons/rx";
-export function UserAvatar({ session }) {
+export function UserAvatar({ session }:{session:any}) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false); // State to control dropdown visibility
 
   const handleDropdownToggle = () => {

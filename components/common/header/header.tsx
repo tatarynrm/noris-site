@@ -9,7 +9,7 @@ import authConfig from "@/configs/auth";
 import SignOutButton from "../buttons/SignOutButton";
 import { UserAvatar } from "./user-profile-button";
 
-const Header = ({session}) => {
+const Header = ({session}:{session:any}) => {
   // const { data: session, status } = useSession();
  
 console.log('HEADER SESSION',session);
