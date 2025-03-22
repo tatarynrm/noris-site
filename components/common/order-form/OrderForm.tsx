@@ -5,8 +5,10 @@ import { useForm, Controller } from 'react-hook-form';
 import Select from 'react-select';
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import axios from 'axios';
-import { API_URL } from '@/lib/urls';
+
 import Confetti from '../confetti/confetti';
+import API_URL from '@/lib/urls';
+
 
 interface FormData {
   name: string;
@@ -58,7 +60,7 @@ const OrderForm = ({ isOpen, toggleSheet }: { isOpen: any; toggleSheet: any }) =
   const [confetti, setConfetti] = useState(false);
 
   const onSubmit = async (data: FormData) => {
-    const { data: result } = await axios.post(`${API_URL}/orders/create`, data);
+    const { data: result } = await axios.post(`https://api.noris-dev.site/orders/create`, data);
 
     console.log(result);
 
